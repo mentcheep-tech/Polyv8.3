@@ -189,7 +189,7 @@ public class PolymarketApi {
                 String b=r.body()!=null?r.body().string():"";
                 try{
                     double p=new JSONObject(b).optDouble("price",-1);
-                    if(r.isSuccessful()&&p>0) main.post(()->cb.price(p,"coinbase",""));
+                    if(r.isSuccessful()&&p>0) main.post(() -> cb.price(p, "coinbase"));
                     else fetchSpotBtcFallback(cb);
                 }catch(Exception e){ fetchSpotBtcFallback(cb); }
             }
@@ -201,13 +201,13 @@ public class PolymarketApi {
                 .header("User-Agent","PolymarketClient/0.8.8.2")
                 .header("Accept","application/json").build();
         http.newCall(r).enqueue(new okhttp3.Callback(){
-            public void onFailure(Call c,IOException e){ main.post(()->cb.price(-1,"fallback",e.getClass().getSimpleName())); }
+            public void onFailure(Call c,IOException e){ main.post(() -> cb.price(-1, "fallback")); }
             public void onResponse(Call c,Response r)throws IOException{
                 String b=r.body()!=null?r.body().string():"";
                 try{
                     double p=new JSONObject(b).optDouble("price",-1);
-                    main.post(()->cb.price(p,"binance",p>0?"":"HTTP "+r.code()));
-                }catch(Exception e){main.post(()->cb.price(-1,"fallback",e.getMessage()));}
+                    main.post(() -> cb.price(p, "binance"));
+                }catch(Exception e){main.post(() -> cb.price(-1, "fallback"));}
             }
         });
     }
